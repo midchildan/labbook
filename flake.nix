@@ -49,17 +49,17 @@
             inherit (pkgs.stdenv.cc) bintools;
           };
         in
-        # stdenv;
-        bootstrapStdenv;
+        stdenv;
 
       overlays = final: prev:
         let
           glibcPackages = prev.callPackage ./packages/glibc (inputs // {
-            inherit (prev) glibc glibcLocales;
+            inherit (prev) glibc glibcLocales glibcLocalesUtf8;
           });
         in
         {
           glibcLocales = glibcPackages."glibcLocales_${libcSuffix}";
+          glibcLocalesUtf8 = glibcPackages."glibcLocalesUtf8_${libcSuffix}";
         };
 
       forAllSystems = f: lib.genAttrs supportedSystems (system:

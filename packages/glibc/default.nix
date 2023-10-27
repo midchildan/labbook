@@ -2,6 +2,7 @@
 , system
 , glibc
 , glibcLocales
+, glibcLocalesUtf8
 , nixpkgs-glibc-2-17
 , nixpkgs-glibc-2-24
 , nixpkgs-glibc-2-25
@@ -25,6 +26,20 @@ in
     version = "2.17";
     old = pkgsGlibc_2_17.glibcLocales;
     new = glibcLocales;
+    preBuild = ''
+      ${new.preBuild or ""}
+
+      # Hack to allow building of the locales (needed since glibc-2.12)
+      sed -i -e "s,^LOCALEDEF=.*,LOCALEDEF=localedef --prefix=$TMPDIR," -e \
+          /library-path/d ../glibc-2*/localedata/Makefile
+    '';
+    inherit lib;
+  };
+
+  glibcLocalesUtf8_2_17 = import ./common.nix rec {
+    version = "2.17";
+    old = pkgsGlibc_2_17.glibcLocales;
+    new = glibcLocalesUtf8;
     preBuild = ''
       ${new.preBuild or ""}
 
