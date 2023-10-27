@@ -1,26 +1,65 @@
 { lib
+, system
 , glibc
-, glibc-2_17
+, glibcLocales
+, nixpkgs-glibc-2-17
+, nixpkgs-glibc-2-24
+, nixpkgs-glibc-2-25
+, ...
 }:
 
 let
-  oldPatches = glibc-2_17.patches or [ ];
-  newPatches = glibc.patches or [ ];
-
-  backportPatches = lib.filter
-    (patch: lib.elem (baseNameOf patch) [
-      "fix-x64-abi.patch"
-    ])
-    newPatches;
-
-  localPatches = [
-    ./fix-symver.patch
-    ./fix-configure.patch
-  ];
+  pkgsGlibc_2_17 = import nixpkgs-glibc-2-17 { inherit system; };
+  pkgsGlibc_2_24 = import nixpkgs-glibc-2-24 { inherit system; };
+  pkgsGlibc_2_25 = import nixpkgs-glibc-2-25 { inherit system; };
 in
-glibc.overrideAttrs (_: {
-  inherit (glibc-2_17) name src configureFlags postPatch;
-  version = "2.17";
+{
+  glibc_2_17 = import ./common.nix {
+    version = "2.17";
+    old = pkgsGlibc_2_17.glibc;
+    new = glibc;
+    inherit lib;
+  };
 
-  patches = oldPatches ++ backportPatches ++ localPatches;
-})
+  glibcLocales_2_17 = import ./common.nix rec {
+    version = "2.17";
+    old = pkgsGlibc_2_17.glibcLocales;
+    new = glibcLocales;
+    preBuild = ''
+      ${new.preBuild or ""}
+
+      # Hack to allow building of the locales (needed since glibc-2.12)
+      sed -i -e "s,^LOCALEDEF=.*,LOCALEDEF=localedef --prefix=$TMPDIR," -e \
+          /library-path/d ../glibc-2*/localedata/Makefile
+    '';
+    inherit lib;
+  };
+
+  glibc_2_24 = import ./common.nix {
+    version = "2.24";
+    old = pkgsGlibc_2_24.glibc;
+    new = glibc;
+    inherit lib;
+  };
+
+  glibcLocales_2_24 = import ./common.nix {
+    version = "2.24";
+    old = pkgsGlibc_2_24.glibcLocales;
+    new = glibcLocales;
+    inherit lib;
+  };
+
+  glibc_2_25 = import ./common.nix {
+    version = "2.25";
+    old = pkgsGlibc_2_25.glibc;
+    new = glibc;
+    inherit lib;
+  };
+
+  glibcLocales_2_25 = import ./common.nix {
+    version = "2.25";
+    old = pkgsGlibc_2_25.glibcLocales;
+    new = glibcLocales;
+    inherit lib;
+  };
+}

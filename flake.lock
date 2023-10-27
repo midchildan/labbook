@@ -16,7 +16,7 @@
         "type": "github"
       }
     },
-    "nixpkgs-glibc-2_17": {
+    "nixpkgs-glibc-2-17": {
       "flake": false,
       "locked": {
         "lastModified": 1384472597,
@@ -33,10 +33,46 @@
         "type": "github"
       }
     },
+    "nixpkgs-glibc-2-24": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1487621255,
+        "narHash": "sha256-Qo8wglIH6OTPVX6ipkSoQzaeEBBXZWDcti3pgTw3GDc=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "0ff2179e0ffc5aded75168cb5a13ca1821bdcd24",
+        "type": "github"
+      },
+      "original": {
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "0ff2179e0ffc5aded75168cb5a13ca1821bdcd24",
+        "type": "github"
+      }
+    },
+    "nixpkgs-glibc-2-25": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1487621801,
+        "narHash": "sha256-D1knWEPWVAWvIE8MG6Y3BkMbiN9McHcljCczyRilB8Q=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "09d02f72f6dc9201fbfce631cb1155d295350176",
+        "type": "github"
+      },
+      "original": {
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "09d02f72f6dc9201fbfce631cb1155d295350176",
+        "type": "github"
+      }
+    },
     "root": {
       "inputs": {
         "nixpkgs": "nixpkgs",
-        "nixpkgs-glibc-2_17": "nixpkgs-glibc-2_17"
+        "nixpkgs-glibc-2-17": "nixpkgs-glibc-2-17",
+        "nixpkgs-glibc-2-24": "nixpkgs-glibc-2-24",
+        "nixpkgs-glibc-2-25": "nixpkgs-glibc-2-25"
       }
     }
   },
