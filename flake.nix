@@ -1,33 +1,20 @@
 {
   description = "Bring glibc 2.17 to nixpkgs-unstable";
 
-  inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
-    nixpkgs-glibc-2-17 = {
-      url = "github:NixOS/nixpkgs/fd7bc4ebfd0bd86a86606cbc4ee22fbab44c5515";
-      flake = false;
-    };
-    nixpkgs-glibc-2-24 = {
-      url = "github:NixOS/nixpkgs/0ff2179e0ffc5aded75168cb5a13ca1821bdcd24";
-      flake = false;
-    };
-    nixpkgs-glibc-2-25 = {
-      url = "github:NixOS/nixpkgs/09d02f72f6dc9201fbfce631cb1155d295350176";
-      flake = false;
-    };
-  };
+  inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
 
   outputs = { self, nixpkgs, ... }@inputs:
     let
       inherit (nixpkgs) lib;
 
       supportedSystems = [ "x86_64-linux" ];
-      libcSuffix = "2_17";
+      glibcVersion = "2.17";
+      glibcSuffix = "_" + builtins.replaceStrings [ "." ] [ "_" ] glibcVersion;
 
       replaceStdenv = { pkgs, ... }:
         let
-          glibcPackages = pkgs.callPackage ./packages/glibc inputs;
-          glibc = glibcPackages."glibc_${libcSuffix}";
+          glibcPackages = pkgs.callPackage ./packages/glibc { };
+          glibc = glibcPackages."glibc${glibcSuffix}";
 
           stdenvWith = { cc, bintools, libc ? glibc }:
             let
@@ -43,33 +30,32 @@
           };
 
           # rebuild libstdc++
-          cc = pkgs.stdenv.cc.cc.override { stdenv = bootstrapStdenv; };
           stdenv = stdenvWith {
-            inherit cc;
+            cc = pkgs.stdenv.cc.cc.override { stdenv = bootstrapStdenv; };
             inherit (pkgs.stdenv.cc) bintools;
           };
         in
         stdenv;
 
-      overlays = final: prev:
+      overlay = final: prev:
         let
-          glibcPackages = prev.callPackage ./packages/glibc (inputs // {
+          glibcPackages = prev.callPackage ./packages/glibc {
             inherit (prev) glibc glibcLocales glibcLocalesUtf8;
-          });
+          };
         in
         {
-          glibcLocales = glibcPackages."glibcLocales_${libcSuffix}";
-          glibcLocalesUtf8 = glibcPackages."glibcLocalesUtf8_${libcSuffix}";
+          glibcLocales = glibcPackages."glibcLocales${glibcSuffix}";
+          glibcLocalesUtf8 = glibcPackages."glibcLocalesUtf8${glibcSuffix}";
         };
 
       forAllSystems = f: lib.genAttrs supportedSystems (system:
         let
           isLinux = lib.hasSuffix "-linux" system;
-          useCustomLibc = isLinux && (libcSuffix != null);
+          useCustomLibc = isLinux && (glibcVersion != null);
           pkgs = import nixpkgs {
             inherit system;
             config = lib.optionalAttrs useCustomLibc { inherit replaceStdenv; };
-            overlays = lib.optionals useCustomLibc [ overlays ];
+            overlays = lib.optionals useCustomLibc [ overlay ];
           };
         in
         f system pkgs);
@@ -102,7 +88,7 @@
             $CC -pthread code.c -o "$n"
           '';
       }
-      // derivationsOnly (pkgs.callPackage ./packages/glibc inputs));
+      // derivationsOnly (pkgs.callPackage ./packages/glibc { }));
 
       apps = forAllSystems (system: pkgs: {
         default = mkApp (pkgs.writeShellScript "show-symbol" ''

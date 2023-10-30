@@ -3,78 +3,48 @@
 , glibc
 , glibcLocales
 , glibcLocalesUtf8
-, nixpkgs-glibc-2-17
-, nixpkgs-glibc-2-24
-, nixpkgs-glibc-2-25
-, ...
 }:
 
 let
-  pkgsGlibc_2_17 = import nixpkgs-glibc-2-17 { inherit system; };
-  pkgsGlibc_2_24 = import nixpkgs-glibc-2-24 { inherit system; };
-  pkgsGlibc_2_25 = import nixpkgs-glibc-2-25 { inherit system; };
+  channels = import ./channels.nix { inherit system; };
+
+  glibc-nixpkgs_2_17 = channels.pkgsGlibc_2_17.glibc;
+  glibc-nixpkgs_2_24 = channels.pkgsGlibc_2_24.glibc;
+  glibc-nixpkgs_2_25 = channels.pkgsGlibc_2_25.glibc;
+
+  args_2_17 = {
+    version = "2.17";
+    old = glibc-nixpkgs_2_17;
+    new = glibc;
+    inherit lib;
+  };
+
+  mkArgsLocale_2_17 = new: args_2_17 // {
+    inherit new;
+    old = channels.pkgsGlibc_2_17.glibcLocales;
+    preBuild = ''
+      ${new.preBuild or ""}
+
+      # Hack to allow building of the locales (needed since glibc-2.12)
+      sed -i -e "s,^LOCALEDEF=.*,LOCALEDEF=localedef --prefix=$TMPDIR," -e \
+          /library-path/d ../glibc-2*/localedata/Makefile
+
+      localedef --help \
+        | grep -m1 -A1 'locale path *:' \
+        | tr '\n' ' ' \
+        | awk -F: '{ print $2 }' \
+        | awk '{ $1 = $1 }; 1' \
+        | xargs -I'{}' mkdir -p $TMPDIR/'{}'
+    '';
+  };
 in
 {
-  glibc_2_17 = import ./common.nix {
-    version = "2.17";
-    old = pkgsGlibc_2_17.glibc;
-    new = glibc;
-    inherit lib;
-  };
+  glibc_2_17 = import ./common.nix args_2_17;
+  glibcLocales_2_17 = import ./common.nix (mkArgsLocale_2_17 glibcLocales);
+  glibcLocalesUtf8_2_17 =
+    import ./common.nix (mkArgsLocale_2_17 glibcLocalesUtf8);
 
-  glibcLocales_2_17 = import ./common.nix rec {
-    version = "2.17";
-    old = pkgsGlibc_2_17.glibcLocales;
-    new = glibcLocales;
-    preBuild = ''
-      ${new.preBuild or ""}
+  glibc-nixpkgs = glibc;
 
-      # Hack to allow building of the locales (needed since glibc-2.12)
-      sed -i -e "s,^LOCALEDEF=.*,LOCALEDEF=localedef --prefix=$TMPDIR," -e \
-          /library-path/d ../glibc-2*/localedata/Makefile
-    '';
-    inherit lib;
-  };
-
-  glibcLocalesUtf8_2_17 = import ./common.nix rec {
-    version = "2.17";
-    old = pkgsGlibc_2_17.glibcLocales;
-    new = glibcLocalesUtf8;
-    preBuild = ''
-      ${new.preBuild or ""}
-
-      # Hack to allow building of the locales (needed since glibc-2.12)
-      sed -i -e "s,^LOCALEDEF=.*,LOCALEDEF=localedef --prefix=$TMPDIR," -e \
-          /library-path/d ../glibc-2*/localedata/Makefile
-    '';
-    inherit lib;
-  };
-
-  glibc_2_24 = import ./common.nix {
-    version = "2.24";
-    old = pkgsGlibc_2_24.glibc;
-    new = glibc;
-    inherit lib;
-  };
-
-  glibcLocales_2_24 = import ./common.nix {
-    version = "2.24";
-    old = pkgsGlibc_2_24.glibcLocales;
-    new = glibcLocales;
-    inherit lib;
-  };
-
-  glibc_2_25 = import ./common.nix {
-    version = "2.25";
-    old = pkgsGlibc_2_25.glibc;
-    new = glibc;
-    inherit lib;
-  };
-
-  glibcLocales_2_25 = import ./common.nix {
-    version = "2.25";
-    old = pkgsGlibc_2_25.glibcLocales;
-    new = glibcLocales;
-    inherit lib;
-  };
+  inherit glibc-nixpkgs_2_17 glibc-nixpkgs_2_24 glibc-nixpkgs_2_25;
 }
