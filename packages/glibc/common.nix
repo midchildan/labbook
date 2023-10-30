@@ -2,11 +2,19 @@
 , version
 , old
 , new
+, patches ? [ ]
+, backportPatches ? [ ]
 , ...
 }@args:
 
 let
-  extraArgs = removeAttrs args [ "lib" "old" "new" ];
+  extraArgs = removeAttrs args [
+    "lib"
+    "old"
+    "new"
+    "patches"
+    "backportPatches"
+  ];
 in
 new.overrideAttrs (drv: ({
   inherit (old) name src configureFlags postPatch;
@@ -14,21 +22,11 @@ new.overrideAttrs (drv: ({
   patches =
     let
       oldPatches = old.patches or [ ];
-      newPatches = drv.patches or [ ];
-      argPatches = args.patches or [ ];
-
-      backportPatches = lib.filter
-        (patch: lib.elem (baseNameOf patch) [
-          "fix-x64-abi.patch"
-        ])
-        newPatches;
-
-      localPatches = [
-        ./fix-symver.patch
-        ./fix-configure.patch
-      ];
+      newPatches = lib.filter
+        (patch: lib.elem (baseNameOf patch) backportPatches)
+        (drv.patches or [ ]);
     in
-    oldPatches ++ backportPatches ++ localPatches ++ argPatches;
+    oldPatches ++ newPatches ++ patches;
 
   preBuild = old.preBuild or "";
 
@@ -48,5 +46,5 @@ new.overrideAttrs (drv: ({
 
     unset -f ln
   '';
-}
-  // extraArgs))
+
+} // extraArgs))

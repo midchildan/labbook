@@ -16,6 +16,11 @@ let
     version = "2.17";
     old = glibc-nixpkgs_2_17;
     new = glibc;
+    patches = [
+      ./fix-symver.patch
+      ./fix-configure.patch
+    ];
+    backportPatches = [ "fix-x64-abi.patch" ];
     inherit lib;
   };
 
