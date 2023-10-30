@@ -46,6 +46,20 @@
         {
           glibcLocales = glibcPackages."glibcLocales${glibcSuffix}";
           glibcLocalesUtf8 = glibcPackages."glibcLocalesUtf8${glibcSuffix}";
+          util-linux = prev.util-linux.overrideAttrs (old: {
+            nativeBuildInputs = with prev; [
+              autoreconfHook
+              pkg-config
+              gtk-doc
+            ];
+            patches = (old.patches or [ ]) ++ [
+              # Fix build with older versions of libc
+              (prev.fetchpatch {
+                url = "https://github.com/util-linux/util-linux/commit/7d679f29aee9f56b07bd792e07b5b4e1ca2f3fa7.patch";
+                sha256 = "sha256-0105v5yT8Q03+qdbyYgnp5+5rHJApTJhOLAM4qthplw=";
+              })
+            ];
+          });
         };
 
       forAllSystems = f: lib.genAttrs supportedSystems (system:
