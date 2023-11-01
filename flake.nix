@@ -69,11 +69,11 @@
           glibcLocales = glibcPackages."glibcLocales${glibcSuffix}";
           glibcLocalesUtf8 = glibcPackages."glibcLocalesUtf8${glibcSuffix}";
           util-linux = prev.util-linux.overrideAttrs (old: {
-            nativeBuildInputs = with prev; [
+            nativeBuildInputs = (old.nativeBuildInputs or [ ]) ++ (with prev; [
               autoreconfHook
               pkg-config
               gtk-doc
-            ];
+            ]);
             patches = (old.patches or [ ]) ++ [
               # Fix build with older versions of libc
               (prev.fetchpatch {
