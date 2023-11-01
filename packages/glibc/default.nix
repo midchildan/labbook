@@ -19,6 +19,7 @@ let
     patches = [
       ./fix-symver.patch
       ./fix-configure.patch
+      ./remove-stdc-xxx-macros.patch
     ];
     backportPatches = [ "fix-x64-abi.patch" ];
     inherit lib;
