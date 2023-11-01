@@ -108,9 +108,11 @@
         default = pkgs.runCommandCC "debug-build"
           {
             code = ''
-              void pthread_atfork(void);
+              #include <inttypes.h>
+              #include <stdio.h>
               int main(void) {
-                pthread_atfork();
+                uint64_t foo = 1;
+                printf("%" PRIx64 "\n", foo);
                 return 0;
               }
             '';
@@ -120,8 +122,8 @@
           ''
             n=$out/bin/$name
             mkdir -p "$(dirname "$n")"
-            mv "$codePath" code.c
-            $CC -pthread code.c -o "$n"
+            mv "$codePath" code.cc
+            $CXX code.cc -o "$n"
           '';
       }
       // derivationsOnly (pkgs.callPackage ./packages/glibc { }));
