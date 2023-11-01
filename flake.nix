@@ -29,10 +29,32 @@
             inherit (pkgs.stdenv.cc) cc bintools;
           };
 
-          # rebuild libstdc++
-          stdenv = stdenvWith {
+          # Rebuild GCC with the preferred libc to
+          #  1. Change the built-in C standard include path
+          #  2. Make libstdc++ binary compatible with the provided libc
+          #
+          # No. 1 might better be solved in Nixpkgs by making cc-wrapper add
+          # the -nostddinc flag.
+          stdenv' = stdenvWith {
             cc = pkgs.stdenv.cc.cc.override { stdenv = bootstrapStdenv; };
             inherit (pkgs.stdenv.cc) bintools;
+          };
+
+          # Some packages are forwarded from the bootstrapping phase of Nixpkgs,
+          # bypassing normal overlays. stdenv.overrides is an overlay that'll
+          # be applied regardless.
+          stdenv = stdenv'.override {
+            overrides = final: prev: {
+              xz = prev.xz.override { stdenv = stdenv'; };
+              inherit (pkgs)
+                # The following packages can be forwarded from the original
+                # package set because they're not used as libraries and won't
+                # cause libc conflicts.
+                bash binutils diffutils findutils gawk gnused gnutar gnugrep
+                gnupatch patchelf
+                # Remove infinite recursion with xz
+                fetchurl;
+            };
           };
         in
         stdenv;
@@ -79,7 +101,7 @@
         program = toString program;
       };
 
-      derivationsOnly = lib.filterAttrs (_: v: lib.isDerivation v);
+      derivationsOnly = lib.filterAttrs (_: lib.isDerivation);
     in
     {
       packages = forAllSystems (system: pkgs: {
