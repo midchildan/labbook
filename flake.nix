@@ -105,7 +105,7 @@
     in
     {
       packages = forAllSystems (system: pkgs: {
-        default = pkgs.runCommandCC "link-pthread-atfork"
+        default = pkgs.runCommandCC "debug-build"
           {
             code = ''
               void pthread_atfork(void);
@@ -127,11 +127,13 @@
       // derivationsOnly (pkgs.callPackage ./packages/glibc { }));
 
       apps = forAllSystems (system: pkgs: {
-        default = mkApp (pkgs.writeShellScript "show-symbol" ''
+        default = mkApp (pkgs.writeShellScript "inspect-artifacts" ''
           set -euxo pipefail
           export PATH=${lib.makeBinPath (with pkgs; [ binutils gnugrep ])}
           nm ${pkgs.stdenv.cc.libc}/lib/libpthread.so.0 | grep pthread_atfork
         '');
       });
+
+      legacyPackages = forAllSystems (_: pkgs: pkgs);
     };
 }
