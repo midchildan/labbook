@@ -1,0 +1,15 @@
+diff -Naur a/misc/regexp.c b/misc/regexp.c
+--- a/misc/regexp.c	1970-01-01 00:00:00.000000000 +0000
++++ b/misc/regexp.c	1970-01-01 00:00:00.000000000 +0000
+@@ -21,11 +21,11 @@
+ #include <regexp.h>
+
+ /* Define the variables used for the interface.  */
+-char *loc1;
+-char *loc2;
++char *loc1 __attribute__ ((nocommon));
++char *loc2 __attribute__ ((nocommon));
+
+ /* Although we do not support the use we define this variable as well.  */
+-char *locs;
++char *locs __attribute__ ((nocommon));
