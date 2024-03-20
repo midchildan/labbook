@@ -22,7 +22,7 @@
         devenv.shells = {
           default = import ./devenv.nix;
 
-          openssl_1_1 = { lib, pkgs, ... }:
+          openssl_1_1 = { lib, config, pkgs, ... }:
             let
               trafficserver' = pkgs.trafficserver.override {
                 openssl = pkgs.openssl_1_1;
@@ -31,6 +31,8 @@
             in
             {
               imports = [ ./devenv.nix ];
+
+              devenv.dotfile = "${config.devenv.root}/.devenv-openssl_1_1";
 
               labbook.ports = {
                 http = 9080;
