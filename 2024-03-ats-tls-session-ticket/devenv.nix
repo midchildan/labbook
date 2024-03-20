@@ -3,7 +3,7 @@
 let
   cfg = config.labbook;
   atsCfg = config.services.trafficserver;
-  httpbinAddr = "localhost:${cfg.ports.httpbin}";
+  httpbinAddr = "localhost:${toString cfg.ports.httpbin}";
   tlsCert = ../common/certs/localhost.crt;
   tlsKey = ../common/certs/localhost.key;
   session = "${config.env.DEVENV_ROOT}/session.pem";
@@ -17,7 +17,6 @@ in
 
   imports = [
     ./devenv/options.nix
-    ./devenv/runtime.nix
     ./devenv/httpbin.nix
     ./devenv/trafficserver
   ];
@@ -76,7 +75,8 @@ in
       http = {
         server_ports =
           let
-            inherit (cfg.ports) http https;
+            http = toString cfg.ports.http;
+            https = toString cfg.ports.https;
           in
           "${http} ${http}:ipv6 ${https}:ssl ${https}:ssl:ipv6";
 
