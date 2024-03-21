@@ -43,15 +43,27 @@
 
         devenv.shells.default = { lib, config, ... }:
           let
-            cert = ../common/certs/localhost.crt;
-            key = ../common/certs/localhost.key;
             ports = lib.mapAttrs (_: toString) {
               vanilla = 8443;
               openssl_1_1 = 7443;
               legacy = 6443;
             };
+
+            keyVersion = "01";
+            stek = [
+              "^name..........$"
+              "^aesKey${keyVersion}......$"
+              "^hmacKey${keyVersion}.....$"
+            ];
+            stekFile = pkgs.writeText "stek.dat" (lib.concatStringsSep "" stek);
+
+            cert = ../common/certs/localhost.crt;
+            key = ../common/certs/localhost.key;
             session = "${config.env.DEVENV_ROOT}/session.pem";
+
+            q = lib.escapeShellArg;
           in
+          assert lib.all (key: lib.stringLength key == 16) stek;
           {
             packages = [ pkgs.openssl ];
 
@@ -59,60 +71,74 @@
               vanilla.exec = lib.escapeShellArgs [
                 (lib.getExe self'.packages.server)
                 ports.vanilla
+                stekFile
                 cert
                 key
               ];
               openssl_1_1.exec = lib.escapeShellArgs [
                 (lib.getExe self'.packages.server-openssl_1_1)
                 ports.openssl_1_1
+                stekFile
                 cert
                 key
               ];
               legacy-api.exec = lib.escapeShellArgs [
                 (lib.getExe self'.packages.server-legacy-api)
                 ports.legacy
+                stekFile
                 cert
                 key
               ];
             };
 
-            scripts.client = {
-              description = "Connect to the TLS server.";
-              exec = ''
-                set -euo pipefail
+            scripts = {
+              client = {
+                description = "Connect to the TLS server.";
+                exec = ''
+                  set -euo pipefail
 
-                main() {
-                  local sess_flag
-                  case "''${1:-}" in
-                    connect) sess_flag=sess_out ;;
-                    reconnect) sess_flag=sess_in ;;
-                    *) usage ;;
-                  esac
+                  main() {
+                    local sess_flag
+                    case "''${1:-}" in
+                      connect) sess_flag=sess_out ;;
+                      reconnect) sess_flag=sess_in ;;
+                      *) usage ;;
+                    esac
 
-                  local port
-                  case "''${2:-}" in
-                    vanilla) port=${ports.vanilla} ;;
-                    openssl_1_1) port=${ports.openssl_1_1} ;;
-                    legacy) port=${ports.legacy} ;;
-                    *) usage ;;
-                  esac
+                    local port
+                    case "''${2:-}" in
+                      vanilla) port=${ports.vanilla} ;;
+                      openssl_1_1) port=${ports.openssl_1_1} ;;
+                      legacy) port=${ports.legacy} ;;
+                      *) usage ;;
+                    esac
 
+                    set -x
+                    ${lib.getExe pkgs.openssl} s_client \
+                      -connect "localhost:$port" \
+                      -servername localhost \
+                      -"$sess_flag" ${q session} \
+                      -CAfile ${cert}
+                  }
+
+                  usage() {
+                    printf 'Usage: %s %s %s\n' \
+                      "$0" '[connect|reconnect]' '[vanilla|openssl_1_1|legacy]'
+                    exit 1
+                  }
+
+                  main "$@"
+                '';
+
+              };
+
+              show = {
+                description = "Show session ticket content.";
+                exec = ''
                   set -x
-                  ${lib.getExe pkgs.openssl} s_client \
-                    -connect "localhost:$port" \
-                    -servername localhost \
-                    -"$sess_flag" ${lib.escapeShellArg session} \
-                    -CAfile ${cert}
-                }
-
-                usage() {
-                  printf 'Usage: %s %s %s\n' \
-                    "$0" '[connect|reconnect]' '[vanilla|openssl_1_1|legacy]'
-                  exit 1
-                }
-
-                main "$@"
-              '';
+                  ${lib.getExe pkgs.openssl} sess_id -in ${q session} -noout -text
+                '';
+              };
             };
           };
 

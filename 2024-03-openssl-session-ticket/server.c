@@ -43,16 +43,48 @@
 #define LEGACY
 #endif
 
-const struct {
-  const unsigned char name[16];
-  const unsigned char aes_key[16];
-  const unsigned char hmac_key[16];
-} STEK = {.name = "name...........$",
-          .aes_key = "aesKey.........$",
-          .hmac_key = "hmacKey........$"};
+typedef struct {
+  unsigned char name[16];
+  unsigned char aes_key[16];
+  unsigned char hmac_key[16];
+} stek_t;
+
+stek_t STEK;
 
 char *MD_NAME = "sha256";
 const EVP_MD *(*EVP_MD_FUNC)(void) = EVP_sha256;
+
+bool read_stek(const char *path, stek_t *stek) {
+  FILE *f = fopen(path, "r");
+  if (!f) {
+    return false;
+  }
+
+  bool is_read_complete = false;
+
+  if (fread(stek->name, sizeof(stek->name), 1, f) != 1) {
+    perror("Unable to read STEK name");
+    goto cleanup;
+  }
+
+  if (fread(stek->aes_key, sizeof(stek->aes_key), 1, f) != 1) {
+    perror("Unable to read STEK AES key");
+    goto cleanup;
+  }
+
+  if (fread(stek->hmac_key, sizeof(stek->hmac_key), 1, f) != 1) {
+    perror("Unable to read STEK HMAC key");
+    goto cleanup;
+  }
+
+  is_read_complete = true;
+
+cleanup:
+  if (f) {
+    fclose(f);
+  }
+  return is_read_complete;
+}
 
 int create_socket(int port) {
   struct sockaddr_in addr;
@@ -217,14 +249,19 @@ error:
 int main(int argc, char **argv) {
   signal(SIGPIPE, SIG_IGN);
 
-  if (argc != 4) {
+  if (argc != 5) {
     fprintf(stderr, "ERROR: Wrong number of arguments.\n");
     return EXIT_FAILURE;
   }
 
   int port = atoi(argv[1]);
-  const char *cert_path = argv[2];
-  const char *key_path = argv[3];
+  const char *stek_path = argv[2];
+  const char *cert_path = argv[3];
+  const char *key_path = argv[4];
+
+  if (!read_stek(stek_path, &STEK)) {
+    return EXIT_FAILURE;
+  }
 
   SSL_CTX *ctx = create_context(cert_path, key_path);
   if (!ctx) {
