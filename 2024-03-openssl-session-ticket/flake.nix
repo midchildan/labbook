@@ -83,14 +83,14 @@
 
                 main() {
                   local sess_flag
-                  case "$1" in
+                  case "''${1:-}" in
                     connect) sess_flag=sess_out ;;
                     reconnect) sess_flag=sess_in ;;
                     *) usage ;;
                   esac
 
                   local port
-                  case "$2" in
+                  case "''${2:-}" in
                     vanilla) port=${ports.vanilla} ;;
                     openssl_1_1) port=${ports.openssl_1_1} ;;
                     legacy) port=${ports.legacy} ;;
