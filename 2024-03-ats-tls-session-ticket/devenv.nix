@@ -1,7 +1,7 @@
 { lib, config, pkgs, ... }:
 
 let
-  cfg = config.labbook;
+  cfg = config.playground;
   atsCfg = config.services.trafficserver;
   httpbinAddr = "localhost:${toString cfg.ports.httpbin}";
   tlsCert = ../common/certs/localhost.crt;

@@ -4,7 +4,7 @@ let
   inherit (lib) types;
 in
 {
-  options.labbook = {
+  options.playground = {
     ports = {
       http = lib.mkOption {
         type = types.port;

@@ -34,15 +34,52 @@
 
               devenv.dotfile = "${config.devenv.root}/.devenv-openssl_1_1";
 
-              labbook.ports = {
-                http = 9080;
-                https = 9443;
+              playground.ports = {
+                http = 7080;
+                https = 7443;
               };
 
               services = {
                 httpbin.enable = lib.mkForce false;
                 trafficserver.package = lib.mkForce trafficserver;
               };
+
+              process-managers.process-compose.settings.port = 7999;
+            };
+
+          legacy-api = { lib, config, pkgs, ... }:
+            let
+              trafficserver' = pkgs.trafficserver.overrideAttrs (old: {
+                nativeBuildInputs = (old.nativeBuildInputs or [ ]) ++ [
+                  pkgs.autoreconfHook
+                ] ++ lib.optionals pkgs.stdenv.isDarwin [
+                  (pkgs.writeShellScriptBin "xcrun" ''
+                    echo "[WARN] Skipping '$@'"
+                  '')
+                ];
+                postPatch = ''
+                  find . -type f -name '*.txt' -exec \
+                    sed -i -e 's/HAVE_SSL_CTX_SET_TLSEXT_TICKET_KEY_EVP_CB/PG_UNDEFINED/g' {} +
+                '';
+              });
+              trafficserver = pkgs.enableDebugging trafficserver';
+            in
+            {
+              imports = [ ./devenv.nix ];
+
+              devenv.dotfile = "${config.devenv.root}/.devenv-legacy-api";
+
+              playground.ports = {
+                http = 6080;
+                https = 6443;
+              };
+
+              services = {
+                httpbin.enable = lib.mkForce false;
+                trafficserver.package = lib.mkForce trafficserver;
+              };
+
+              process-managers.process-compose.settings.port = 6999;
             };
         };
 
