@@ -310,11 +310,12 @@ in
   config = lib.mkIf cfg.enable {
     packages = [ cfg.package ];
 
+    env.TS_RUNROOT = writeYAML "runroot.yaml" runroot;
+
     processes.trafficserver.exec =
       let
         q = lib.escapeShellArg;
         qs = lib.escapeShellArgs;
-        runrootFile = writeYAML "runroot.yaml" runroot;
       in
       ''
         set -x
@@ -326,7 +327,7 @@ in
         rm ${q "${statedir}/config"}
         ln -s ${q confdir} ${q "${statedir}/config"}
 
-        exec ${cfg.package}/bin/traffic_manager --run-root=${runrootFile}
+        exec ${cfg.package}/bin/traffic_manager
       '';
 
     services.trafficserver.records.proxy.config.body_factory.template_sets_dir =
