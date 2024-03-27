@@ -15,22 +15,37 @@ let
 
   writeLines = name: lines:
     let
-      text = lib.concatStringsSep "\n" lines;
+      allLines = lines ++ lib.optional (lines != [ ]) "";
+      text = lib.concatStringsSep "\n" allLines;
     in
     pkgs.writeText name text;
 
-  toRecord = path: value:
+  mkRecordLine = setting: type: value:
+    let
+      key =
+        if lib.last setting == "_"
+        then lib.concatStringsSep "." (lib.init setting)
+        else lib.concatStringsSep "." setting;
+    in
+    "CONFIG ${key} ${type} ${toString value}";
+
+  toRecords = setting: value:
     if lib.isAttrs value then
-      lib.mapAttrsToList (n: v: toRecord (path ++ [ n ]) v) value
+      let
+        toLines = lines: n: v:
+          assert !lib.hasInfix "." n;
+          lines ++ (toRecords (setting ++ [ n ]) v);
+      in
+      lib.foldlAttrs toLines [ ] value
     else if lib.isInt value then
-      "CONFIG ${lib.concatStringsSep "." path} INT ${toString value}"
+      [ (mkRecordLine setting "INT" value) ]
     else if lib.isFloat value then
-      "CONFIG ${lib.concatStringsSep "." path} FLOAT ${toString value}"
+      [ (mkRecordLine setting "FLOAT" value) ]
     else
-      "CONFIG ${lib.concatStringsSep "." path} STRING ${toString value}";
+      [ (mkRecordLine setting "STRING" value) ];
 
   writeRecords = name: cfg:
-    writeLines name (lib.flatten (toRecord [ ] cfg));
+    writeLines name (toRecords [ ] cfg);
 
   writePluginConfig = name: cfg:
     writeLines name (map (p: "${p.path} ${p.arg}") cfg);
@@ -206,6 +221,15 @@ in
 
         Consult the [upstream documentation](${getManualUrl "records.config"})
         for more details.
+
+        When defining the values for the option `x.y`, a nested attribute should
+        be used. Using a flat attribute set with the attribute name `x.y` will
+        result in an error.
+
+        If options for both `x.y` and `x.y.z` needs to be set, you can set
+        `x.y._` as `x.y`. This only applies to Traffic Server versions prior to
+        10. Traffic Server 10 and onwards uses YAML configuration, which doesn't
+        have this kind of problem.
       '';
     };
 
