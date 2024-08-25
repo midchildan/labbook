@@ -1,0 +1,40 @@
+diff --git a/clients/nodejs/zpe/Makefile b/clients/nodejs/zpe/Makefile
+index 49252bd56..d7753dd8f 100644
+--- a/clients/nodejs/zpe/Makefile
++++ b/clients/nodejs/zpe/Makefile
+@@ -32,4 +32,4 @@ test:
+ 	npm run test
+ 
+ clean:
+-	rm -rf node_modules artifacts
++	rm -rf artifacts
+diff --git a/clients/nodejs/zts/Makefile b/clients/nodejs/zts/Makefile
+index 93def3747..f59a01d4d 100644
+--- a/clients/nodejs/zts/Makefile
++++ b/clients/nodejs/zts/Makefile
+@@ -33,4 +33,4 @@ test:
+ 	npm run test
+ 
+ clean:
+-	rm -rf node_modules artifacts
++	rm -rf artifacts
+diff --git a/libs/nodejs/auth_core/Makefile b/libs/nodejs/auth_core/Makefile
+index d527e6dbf..f0f7dde28 100644
+--- a/libs/nodejs/auth_core/Makefile
++++ b/libs/nodejs/auth_core/Makefile
+@@ -32,4 +32,4 @@ test:
+ 	npm run test
+ 
+ clean:
+-	rm -rf node_modules artifacts
++	rm -rf artifacts
+diff --git a/ui/Makefile b/ui/Makefile
+index 276f3645c..965cf39e7 100644
+--- a/ui/Makefile
++++ b/ui/Makefile
+@@ -34,4 +34,4 @@ test:
+ 	npm run test
+ 
+ clean:
+-	rm -rf node_modules artifacts
++	rm -rf artifacts

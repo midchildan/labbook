@@ -1,0 +1,13 @@
+diff --git a/core/zms/src/main/rdl/Names.tdl b/core/zms/src/main/rdl/Names.tdl
+index df12a1164..9f8540db2 100644
+--- a/core/zms/src/main/rdl/Names.tdl
++++ b/core/zms/src/main/rdl/Names.tdl
+@@ -54,7 +54,7 @@ type AuthorityName String (pattern="{CompoundName}"); //i.e. "user"
+ //it belongs to another authority. In addition to the
+ //YEncoded set our token includes ; to separate components
+ //and , to separate roles and : for IPv6 addresses
+-type SignedToken String (pattern="[a-zA-Z0-9\\._%=:;,-]*");
++type SignedToken String (pattern="[a-zA-Z0-9\\._%=:;,-\\[\\]]*");
+ 
+ //A group name
+ type GroupName String (pattern="{DomainName}:group\\.{EntityName}");

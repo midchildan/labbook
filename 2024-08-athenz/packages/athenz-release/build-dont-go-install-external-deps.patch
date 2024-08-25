@@ -1,0 +1,219 @@
+diff --git a/clients/go/msd/Makefile b/clients/go/msd/Makefile
+index 3aaa0b3ef..a8f2ec7f1 100644
+--- a/clients/go/msd/Makefile
++++ b/clients/go/msd/Makefile
+@@ -46,7 +46,7 @@ endif
+ endif
+ 
+ build:
+-	go install github.com/ardielle/ardielle-tools/rdl@latest
++	@echo "skipping go install github.com/ardielle/ardielle-tools/rdl@latest"
+ 
+ model.go: $(RDL_FILE)
+ 	$(GOPATH)/bin/rdl -ps generate -t -o $@ athenz-go-model $(RDL_FILE)
+diff --git a/clients/go/zms/Makefile b/clients/go/zms/Makefile
+index 5cb8de382..7feb8ef15 100644
+--- a/clients/go/zms/Makefile
++++ b/clients/go/zms/Makefile
+@@ -46,7 +46,7 @@ endif
+ endif
+ 
+ build:
+-	go install github.com/ardielle/ardielle-tools/rdl@latest
++	@echo "skipping go install github.com/ardielle/ardielle-tools/rdl@latest"
+ 
+ model.go: $(RDL_FILE)
+ 	$(GOPATH)/bin/rdl -ps generate -t -o $@ athenz-go-model $(RDL_FILE)
+diff --git a/clients/go/zts/Makefile b/clients/go/zts/Makefile
+index 4df62a59d..4a6f1b631 100644
+--- a/clients/go/zts/Makefile
++++ b/clients/go/zts/Makefile
+@@ -46,7 +46,7 @@ endif
+ endif
+ 
+ build:
+-	go install github.com/ardielle/ardielle-tools/rdl@latest
++	@echo "skipping go install github.com/ardielle/ardielle-tools/rdl@latest"
+ 
+ model.go: $(RDL_FILE)
+ 	$(GOPATH)/bin/rdl -ps generate -t -o $@ go-model $(RDL_FILE)
+diff --git a/clients/java/msd/scripts/make_stubs.sh b/clients/java/msd/scripts/make_stubs.sh
+index 5fe017de6..c66a0726d 100755
+--- a/clients/java/msd/scripts/make_stubs.sh
++++ b/clients/java/msd/scripts/make_stubs.sh
+@@ -19,10 +19,6 @@ fi
+ # Note this script is dependent on the rdl utility.
+ # go install github.com/ardielle/ardielle-tools/rdl@latest
+ 
+-if [ -x "$(command -v go)" ]; then
+-    go install github.com/ardielle/ardielle-tools/rdl@latest
+-fi
+-
+ command -v rdl >/dev/null 2>&1 || {
+     echo >&2 "------------------------------------------------------------------------";
+     echo >&2 "SOURCE WARNING";
+diff --git a/clients/java/zms/scripts/make_stubs.sh b/clients/java/zms/scripts/make_stubs.sh
+index 5d2e7dffa..c12c7127e 100755
+--- a/clients/java/zms/scripts/make_stubs.sh
++++ b/clients/java/zms/scripts/make_stubs.sh
+@@ -16,10 +16,6 @@ fi
+ # Note this script is dependent on the rdl utility.
+ # go install github.com/ardielle/ardielle-tools/rdl@latest
+ 
+-if [ -x "$(command -v go)" ]; then
+-    go install github.com/ardielle/ardielle-tools/rdl@latest
+-fi
+-
+ command -v rdl >/dev/null 2>&1 || {
+     echo >&2 "------------------------------------------------------------------------";
+     echo >&2 "SOURCE WARNING";
+diff --git a/clients/java/zts/scripts/make_stubs.sh b/clients/java/zts/scripts/make_stubs.sh
+index 18cad2367..0d293dff7 100755
+--- a/clients/java/zts/scripts/make_stubs.sh
++++ b/clients/java/zts/scripts/make_stubs.sh
+@@ -16,10 +16,6 @@ fi
+ # Note this script is dependent on the rdl utility.
+ # go install github.com/ardielle/ardielle-tools/rdl@latest
+ 
+-if [ -x "$(command -v go)" ]; then
+-    go install github.com/ardielle/ardielle-tools/rdl@latest
+-fi
+-
+ command -v rdl >/dev/null 2>&1 || {
+     echo >&2 "------------------------------------------------------------------------";
+     echo >&2 "SOURCE WARNING";
+diff --git a/core/msd/scripts/make_stubs.sh b/core/msd/scripts/make_stubs.sh
+index 068719610..b486a05da 100755
+--- a/core/msd/scripts/make_stubs.sh
++++ b/core/msd/scripts/make_stubs.sh
+@@ -18,10 +18,6 @@ fi
+ # Note this script is dependent on the rdl utility.
+ # go install github.com/ardielle/ardielle-tools/rdl@latest
+ 
+-if [ -x "$(command -v go)" ]; then
+-    go install github.com/ardielle/ardielle-tools/rdl@latest
+-fi
+-
+ command -v rdl >/dev/null 2>&1 || {
+     echo >&2 "------------------------------------------------------------------------";
+     echo >&2 "SOURCE WARNING";
+diff --git a/core/zms/scripts/make_stubs.sh b/core/zms/scripts/make_stubs.sh
+index 14d62aaa0..08d1e6b1f 100755
+--- a/core/zms/scripts/make_stubs.sh
++++ b/core/zms/scripts/make_stubs.sh
+@@ -16,10 +16,6 @@ fi
+ # Note this script is dependent on the rdl utility.
+ # go install github.com/ardielle/ardielle-tools/rdl@latest
+ 
+-if [ -x "$(command -v go)" ]; then
+-    go install github.com/ardielle/ardielle-tools/rdl@latest
+-fi
+-
+ command -v rdl >/dev/null 2>&1 || {
+     echo >&2 "------------------------------------------------------------------------";
+     echo >&2 "SOURCE WARNING";
+diff --git a/core/zts/scripts/make_stubs.sh b/core/zts/scripts/make_stubs.sh
+index e4483fd88..77b337259 100755
+--- a/core/zts/scripts/make_stubs.sh
++++ b/core/zts/scripts/make_stubs.sh
+@@ -16,10 +16,6 @@ fi
+ # Note this script is dependent on the rdl utility.
+ # go install github.com/ardielle/ardielle-tools/rdl@latest
+ 
+-if [ -x "$(command -v go)" ]; then
+-    go install github.com/ardielle/ardielle-tools/rdl@latest
+-fi
+-
+ command -v rdl >/dev/null 2>&1 || {
+     echo >&2 "------------------------------------------------------------------------";
+     echo >&2 "SOURCE WARNING";
+diff --git a/rdl/rdl-gen-athenz-go-client/make_generator.sh b/rdl/rdl-gen-athenz-go-client/make_generator.sh
+index 96188a8a9..a94ace059 100755
+--- a/rdl/rdl-gen-athenz-go-client/make_generator.sh
++++ b/rdl/rdl-gen-athenz-go-client/make_generator.sh
+@@ -28,7 +28,6 @@ if [ -z "${GOPATH}" ]; then
+     echo >&2 "GOPATH is not set, setting to ${GOPATH} (from 'go env GOPATH')."
+ fi
+ 
+-go install github.com/ardielle/ardielle-go/...
+ go build
+ rm -f ${GOPATH}/bin/rdl-gen-athenz-go-client
+ cp rdl-gen-athenz-go-client ${GOPATH}/bin/rdl-gen-athenz-go-client
+diff --git a/rdl/rdl-gen-athenz-go-model/make_generator.sh b/rdl/rdl-gen-athenz-go-model/make_generator.sh
+index 1f609d0dc..6fd921fe8 100755
+--- a/rdl/rdl-gen-athenz-go-model/make_generator.sh
++++ b/rdl/rdl-gen-athenz-go-model/make_generator.sh
+@@ -28,7 +28,6 @@ if [ -z "${GOPATH}" ]; then
+     echo >&2 "GOPATH is not set, setting to ${GOPATH} (from 'go env GOPATH')."
+ fi
+ 
+-go install github.com/ardielle/ardielle-go/...
+ go build
+ rm -f ${GOPATH}/bin/rdl-gen-athenz-go-model
+ cp rdl-gen-athenz-go-model ${GOPATH}/bin/rdl-gen-athenz-go-model
+diff --git a/rdl/rdl-gen-athenz-java-client/make_generator.sh b/rdl/rdl-gen-athenz-java-client/make_generator.sh
+index 00f42734f..2e83b26c3 100755
+--- a/rdl/rdl-gen-athenz-java-client/make_generator.sh
++++ b/rdl/rdl-gen-athenz-java-client/make_generator.sh
+@@ -28,7 +28,6 @@ if [ -z "${GOPATH}" ]; then
+     echo >&2 "[INFO] GOPATH is not set, setting to ${GOPATH} (from 'go env GOPATH)."
+ fi
+ 
+-go install github.com/ardielle/ardielle-go/...
+ go build
+ rm -f ${GOPATH}/bin/rdl-gen-athenz-java-client
+ cp rdl-gen-athenz-java-client ${GOPATH}/bin/rdl-gen-athenz-java-client
+diff --git a/rdl/rdl-gen-athenz-java-model/make_generator.sh b/rdl/rdl-gen-athenz-java-model/make_generator.sh
+index 0942465a4..1b20fe7b0 100755
+--- a/rdl/rdl-gen-athenz-java-model/make_generator.sh
++++ b/rdl/rdl-gen-athenz-java-model/make_generator.sh
+@@ -28,7 +28,6 @@ if [ -z "${GOPATH}" ]; then
+     echo >&2 "[INFO] GOPATH is not set, setting to ${GOPATH} (from 'go env GOPATH)."
+ fi
+ 
+-go install github.com/ardielle/ardielle-go/...
+ go build
+ rm -f ${GOPATH}/bin/rdl-gen-athenz-java-model
+ cp rdl-gen-athenz-java-model ${GOPATH}/bin/rdl-gen-athenz-java-model
+diff --git a/rdl/rdl-gen-athenz-server/make_generator.sh b/rdl/rdl-gen-athenz-server/make_generator.sh
+index 4ef1a3f62..c6974ea99 100755
+--- a/rdl/rdl-gen-athenz-server/make_generator.sh
++++ b/rdl/rdl-gen-athenz-server/make_generator.sh
+@@ -33,7 +33,6 @@ if [ ! -d "${GOPATH}/bin" ]; then
+     exit 1;
+ fi
+ 
+-go install github.com/ardielle/ardielle-go/...
+ go build
+ rm -f ${GOPATH}/bin/rdl-gen-athenz-server
+ cp rdl-gen-athenz-server ${GOPATH}/bin/rdl-gen-athenz-server
+diff --git a/servers/zms/scripts/make_stubs.sh b/servers/zms/scripts/make_stubs.sh
+index fd2a9f4ec..eb1bd5cdc 100755
+--- a/servers/zms/scripts/make_stubs.sh
++++ b/servers/zms/scripts/make_stubs.sh
+@@ -16,10 +16,6 @@ if [ ! -z "${SCREWDRIVER}" ] || [ ! -z "${TRAVIS_PULL_REQUEST}" ] || [ ! -z "${T
+     exit 0;
+ fi
+ 
+-if [ -x "$(command -v go)" ]; then
+-    go install github.com/ardielle/ardielle-tools/rdl@latest
+-fi
+-
+ command -v rdl >/dev/null 2>&1 || {
+     echo >&2 "------------------------------------------------------------------------";
+     echo >&2 "SOURCE WARNING";
+diff --git a/servers/zts/scripts/make_stubs.sh b/servers/zts/scripts/make_stubs.sh
+index dbebc4d89..86aa92bce 100755
+--- a/servers/zts/scripts/make_stubs.sh
++++ b/servers/zts/scripts/make_stubs.sh
+@@ -18,10 +18,6 @@ fi
+ # Use open source version of rdl https://github.com/ardielle/ardielle-tools
+ # go install github.com/ardielle/ardielle-tools/rdl@latest
+ 
+-if [ -x "$(command -v go)" ]; then
+-    go install github.com/ardielle/ardielle-tools/rdl@latest
+-fi
+-
+ command -v rdl >/dev/null 2>&1 || {
+     echo >&2 "------------------------------------------------------------------------";
+     echo >&2 "SOURCE WARNING";

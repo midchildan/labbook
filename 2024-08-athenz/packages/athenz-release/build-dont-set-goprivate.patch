@@ -1,0 +1,88 @@
+diff --git a/provider/aws/sia-ec2/Makefile b/provider/aws/sia-ec2/Makefile
+index e4e64dcaa..6f3d20ab8 100644
+--- a/provider/aws/sia-ec2/Makefile
++++ b/provider/aws/sia-ec2/Makefile
+@@ -1,6 +1,5 @@
+ GOPKGNAME:=github.com/AthenZ/athenz/provider/aws/sia-ec2
+ export GOPATH ?= /tmp/go
+-export GOPRIVATE=github.com
+ 
+ FMT_LOG=/tmp/fmt.log
+ 
+diff --git a/provider/aws/sia-eks/Makefile b/provider/aws/sia-eks/Makefile
+index ee621ed47..2d959c35e 100644
+--- a/provider/aws/sia-eks/Makefile
++++ b/provider/aws/sia-eks/Makefile
+@@ -1,6 +1,5 @@
+ GOPKGNAME:=github.com/AthenZ/athenz/provider/aws/sia-eks
+ export GOPATH ?= /tmp/go
+-export GOPRIVATE=github.com
+ 
+ FMT_LOG=/tmp/fmt.log
+ 
+diff --git a/provider/aws/sia-fargate/Makefile b/provider/aws/sia-fargate/Makefile
+index db97eb917..0dae51765 100644
+--- a/provider/aws/sia-fargate/Makefile
++++ b/provider/aws/sia-fargate/Makefile
+@@ -1,6 +1,5 @@
+ GOPKGNAME:=github.com/AthenZ/athenz/provider/aws/sia-fargate
+ export GOPATH ?= /tmp/go
+-export GOPRIVATE=github.com
+ 
+ FMT_LOG=/tmp/fmt.log
+ 
+diff --git a/provider/azure/sia-vm/Makefile b/provider/azure/sia-vm/Makefile
+index 648b51630..303d16a5d 100644
+--- a/provider/azure/sia-vm/Makefile
++++ b/provider/azure/sia-vm/Makefile
+@@ -1,6 +1,5 @@
+ GOPKGNAME:=github.com/AthenZ/athenz/provider/azure/sia-vm
+ export GOPATH ?= /tmp/go
+-export GOPRIVATE=github.com
+ 
+ FMT_LOG=/tmp/fmt.log
+ 
+diff --git a/provider/gcp/sia-gce/Makefile b/provider/gcp/sia-gce/Makefile
+index f9dddab2f..b5fd9486d 100644
+--- a/provider/gcp/sia-gce/Makefile
++++ b/provider/gcp/sia-gce/Makefile
+@@ -1,6 +1,5 @@
+ GOPKGNAME:=github.com/AthenZ/athenz/provider/gcp/sia-gce
+ export GOPATH ?= /tmp/go
+-export GOPRIVATE=github.com
+ 
+ FMT_LOG=/tmp/fmt.log
+ 
+diff --git a/provider/gcp/sia-gke/Makefile b/provider/gcp/sia-gke/Makefile
+index c1ed1c456..12d2d1072 100644
+--- a/provider/gcp/sia-gke/Makefile
++++ b/provider/gcp/sia-gke/Makefile
+@@ -1,6 +1,5 @@
+ GOPKGNAME:=github.com/AthenZ/athenz/provider/gcp/sia-gke
+ export GOPATH ?= /tmp/go
+-export GOPRIVATE=github.com
+ 
+ FMT_LOG=/tmp/fmt.log
+ 
+diff --git a/provider/gcp/sia-run/Makefile b/provider/gcp/sia-run/Makefile
+index 0aa8a2d7a..efcf551e3 100644
+--- a/provider/gcp/sia-run/Makefile
++++ b/provider/gcp/sia-run/Makefile
+@@ -1,6 +1,5 @@
+ GOPKGNAME:=github.com/AthenZ/athenz/provider/gcp/sia-run
+ export GOPATH ?= /tmp/go
+-export GOPRIVATE=github.com
+ 
+ FMT_LOG=/tmp/fmt.log
+ 
+diff --git a/provider/github/sia-actions/Makefile b/provider/github/sia-actions/Makefile
+index ffdb9ceb8..6b638dee9 100644
+--- a/provider/github/sia-actions/Makefile
++++ b/provider/github/sia-actions/Makefile
+@@ -1,6 +1,5 @@
+ GOPKGNAME:=github.com/AthenZ/athenz/provider/github/sia-actions
+ export GOPATH ?= /tmp/go
+-export GOPRIVATE=github.com
+ 
+ FMT_LOG=/tmp/fmt.log
+ 
