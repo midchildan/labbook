@@ -1,0 +1,55 @@
+buildscript {
+  repositories {
+    mavenCentral()
+  }
+
+  dependencyLocking {
+    lockAllConfigurations()
+  }
+}
+
+plugins {
+  id 'java'
+  id 'application'
+  id 'org.springframework.boot' version '3.+'
+  id 'com.github.spotbugs' version '6.+'
+  id 'io.freefair.lombok' version '8.+'
+}
+
+group = 'org.midchildan'
+version = '0.0.1-SNAPSHOT'
+
+java {
+  toolchain {
+    languageVersion = JavaLanguageVersion.of(21)
+  }
+}
+
+repositories {
+  mavenCentral()
+}
+
+dependencyLocking {
+  lockAllConfigurations()
+}
+
+dependencies {
+  implementation platform(org.springframework.boot.gradle.plugin.SpringBootPlugin.BOM_COORDINATES)
+  implementation 'org.springframework.boot:spring-boot-starter-web'
+  implementation 'org.springframework.boot:spring-boot-starter-actuator'
+  implementation 'org.springframework.boot:spring-boot-starter-validation'
+  implementation 'org.apache.httpcomponents.client5:httpclient5:5.4'
+
+  developmentOnly platform(org.springframework.boot.gradle.plugin.SpringBootPlugin.BOM_COORDINATES)
+  developmentOnly 'org.springframework.boot:spring-boot-devtools'
+
+  testImplementation platform(org.springframework.boot.gradle.plugin.SpringBootPlugin.BOM_COORDINATES)
+  testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+  testRuntimeOnly platform(org.springframework.boot.gradle.plugin.SpringBootPlugin.BOM_COORDINATES)
+  testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+tasks.named('test') {
+  useJUnitPlatform()
+}
